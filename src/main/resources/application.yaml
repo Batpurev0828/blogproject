@@ -1,0 +1,14 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_blog
+    username: spirit
+    password: 2008#Batpurev
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  application:
+    name: blog
