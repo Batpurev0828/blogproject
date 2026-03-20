@@ -8,6 +8,7 @@ import com.example.blog.api.ApiResponse;
 import com.example.blog.entity.UserAccount;
 import com.example.blog.repository.PostRepository;
 import com.example.blog.repository.UserAccountRepository;
+import com.example.blog.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,12 @@ import java.util.List;
 public class UserAccountController {
     private final UserAccountRepository userAccountRepository;
     private final PostRepository postRepository;
+    private final UserService userService;
 
-    public UserAccountController(UserAccountRepository userAccountRepository, PostRepository postRepository) {
+    public UserAccountController(UserAccountRepository userAccountRepository, PostRepository postRepository, UserService userService) {
         this.userAccountRepository = userAccountRepository;
         this.postRepository = postRepository;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -32,11 +35,11 @@ public class UserAccountController {
         }
         UserAccount user = new UserAccount();
         user.setName(dto.name);
-        user.setPassword(dto.password);
+        user.setPassword(userService.hashPassword(dto.password));
         user.setEmail(dto.email);
         userAccountRepository.save(user);
         UserResponseDTO data = new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
-        ApiResponse<UserResponseDTO> response = new ApiResponse<UserResponseDTO>(200, "success", data);
+        ApiResponse<UserResponseDTO> response = new ApiResponse<>(200, "success", data);
         return ResponseEntity.ok(response);
     }
 
